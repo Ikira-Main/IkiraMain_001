@@ -39,71 +39,117 @@ public class FadeIn_Out : MonoBehaviour {
 	//Update is called once per frame
 	void Update()
 	{
-		if (Input.GetMouseButtonDown(0) /*&& BlackCanvas.alpha == 1.0f*/)     //Update script to give error alert if trying to test script fade
+		//Left Mouse Button Clicked - start fade in unless alpha is not 1 (already started)
+		if (Input.GetMouseButtonDown(0))
 		{
-			//if (BlackCanvas.alpha == 1.0f)
-			//{
-				Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS AT 1.0F ALPHA");
-			//}
-			//else
-			//{
-				StartCoroutine(FadeInScene());
-			//}
+			//If there is not full alpha we're fading already
+			if (BlackCanvas.alpha != 1.0f)
+			{
+				//Notify of current transition
+				Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS NOT AT 1.0F ALPHA ----- IN TRANSITION");
+			}
+			else
+			{
+				//Start fading in
+				FadeIn();
+			}
 		}
 
-		if (Input.GetMouseButtonDown(1) /*&& BlackCanvas.alpha == 0.0f*/)
+		//Right Mouse Button Clicked - start fade out unless alpha is not 0 (already started)
+		if (Input.GetMouseButtonDown(1))
 		{
-			//if (BlackCanvas.alpha == 0.0f)
-			//{
-				Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS AT 0.0F ALPHA");
-			//}
-			//else
-			//{
-				StartCoroutine(FadeOutScene());
-			//}
+			//If there is not zero alpha we're fading already
+			if (BlackCanvas.alpha != 0.0f)
+			{
+				//Notify of current transition
+				Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS NOT AT 0.0F ALPHA ----- IN TRANSITION");
+			}
+			else
+			{
+				//Start fading out
+				FadeOut();
+			}
 		}
 	}
 
+	//Coroutine for fading in new scene
 	IEnumerator FadeInScene()
 	{
 		//LevelManager.SetBool("FadeOut", true);
 
+		//Fading in to the new scene (making the canvas transparent)
 		while (BlackCanvas.alpha > 0)
 		{
+			//Increase time
 			_time += Time.deltaTime;
+			//Update alpha
 			BlackCanvas.alpha = Mathf.Clamp01(1.0f - (_time / _fadeTime));
+			//Pause coroutine (yield to rest of application process)
 			yield return null;
 		}
-		//if (BlackCanvas.alpha == 0.0f)
-		//{
-		//	Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS AT 0.0F ALPHA");
-		//}
+		//Reset time for next fade
 		_time = 0;
+
+		//Done fading in
+		Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS AT 0.0F ALPHA ----- DONE FADING IN - LEVEL LOADED");
 	}
 
+	//Coroutine for fading out old scene
 	IEnumerator FadeOutScene()
 	{
+		//Fading out from the old scene (making the canvas opaque)
 		while (BlackCanvas.alpha < 1)
 		{
+			//Increase time
 			_time += Time.deltaTime;
+			//Update alpha
 			BlackCanvas.alpha = Mathf.Clamp01((_time / _fadeTime) - 0.0f);
+			//Pause coroutine (yield to rest of application process)
 			yield return null;
 		}
-		//if (BlackCanvas.alpha == 1.0f)
-		//{
-		//	Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS AT 1.0F ALPHA");
-		//}
+		//Reset time for next fade
 		_time = 0;
+
+		//Done fading out
+		Debug.Log("!!!~~~~~ALERT~~~~!!! CANVAS IS AT 1.0F ALPHA ----- DONE FADING OUT - LOADING LEVEL");
+
+		//Load the next level
 		FadeLevel(levelToLoad, Scene_name);
 	}
 
+	//Fade Out Coroutine Wrapper
+	void FadeOut()
+	{
+		//Initiate fading out
+		StartCoroutine(FadeOutScene());
+	}
 
+	//Level Load Wrapper
+	void LoadLevel(int levelIndex, string levelName)
+	{
+		//Set index
+		levelToLoad = levelIndex;
+		//Set name
+		levelName = Scene_name;
+		//Load level by name
+		SceneManager.LoadScene(Scene_name);
+	}
+
+	//Fade In Coroutine Wrapper
+	void FadeIn()
+	{
+		//Initiate fading in
+		StartCoroutine(FadeInScene());
+	}
+
+	//Fade Level Wrapper
 	public void FadeLevel(int levelIndex, string levelName)
 	{
-		levelToLoad = levelIndex;
-		levelName = Scene_name;
-		SceneManager.LoadScene(Scene_name);
-		StartCoroutine(FadeInScene());
+		//Load the level
+		LoadLevel(levelIndex, levelName);
+
+		//Fade in the new level
+		FadeIn();
 	}
 
 }
