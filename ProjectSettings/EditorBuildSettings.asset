@@ -11,3 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scene/MainMenu.unity
     guid: 0e2ddfd57fef8b94290e3c6f6f7f06ba
+  - enabled: 1
+    path: Assets/Scene/Chem_Lab.unity
+    guid: 3cfc84e19e7a9c943afb04fcbae75397
