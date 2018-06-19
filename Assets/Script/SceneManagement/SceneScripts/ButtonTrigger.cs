@@ -4,12 +4,9 @@ using UnityEngine;
 using UnityEditor.SceneManagement;
 
 public class ButtonTrigger : MonoBehaviour {
-
-	public GameMaster sceneLoad;
-
+	
 	// Use this for initialization
 	void Start () {
-
 	}
 
 	private void Awake()
@@ -30,7 +27,7 @@ public class ButtonTrigger : MonoBehaviour {
 			//Load appropriate level
 			Debug.Log("Loading Chemical Laboratory...");
 			//TODO Reference coroutine from GameMaster to start fade out coroutine while passing index reference number from trigger collider to LoadLevel()
-
+			GameMaster.Instance.NewFade("Lab_Chem");
 		}
 	}
 }
